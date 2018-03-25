@@ -98,7 +98,7 @@ void CAN_rx(uint8_t msg_obj_num) {
 void CAN_ClearTxTimedOut(void) {
     uint8_t i;
     for (i = 1; i <= NUM_MSG_OBJS; i++) {
-        if (*msTicksPtr - msg_obj_timeout[i] > TX_TIMEOUT) { 
+        if (*msTicksPtr - msg_obj_timeout[i] > TX_TIMEOUT) {
             msg_obj_stat[i] = false;
         }
     }
@@ -109,7 +109,7 @@ void CAN_TransmitPendingMsg(void) {
 
     uint8_t i;
     for (i = 1; i <= NUM_MSG_OBJS; i++) {
-        if (!msg_obj_stat[i]) { 
+        if (!msg_obj_stat[i]) {
             if (RingBuffer_Pop(&tx_buffer, &tmp_msg_obj_2)){
                 tmp_msg_obj_2.msgobj = i;
                 LPC_CCAN_API->can_transmit(&tmp_msg_obj_2);
@@ -189,7 +189,7 @@ void CAN_Init(uint32_t baud_rate, volatile uint32_t *external_msticks_ptr) {
 // ANDs the mask with the input ID and checks if == to mode_id
 void CAN_SetMask1(uint32_t mask, uint32_t mode_id) {
 	msg_obj.mode_id = mode_id;
-	msg_obj.mask = mask; 
+	msg_obj.mask = mask;
 	msg_obj.msgobj = 27;
 	LPC_CCAN_API->config_rxmsgobj(&msg_obj);
 	msg_obj.msgobj = 28;
@@ -200,7 +200,7 @@ void CAN_SetMask1(uint32_t mask, uint32_t mode_id) {
 
 void CAN_SetMask2(uint32_t mask, uint32_t mode_id) {
 	msg_obj.mode_id = mode_id;
-	msg_obj.mask = mask; 
+	msg_obj.mask = mask;
 	msg_obj.msgobj = 30;
 	LPC_CCAN_API->config_rxmsgobj(&msg_obj);
 	msg_obj.msgobj = 31;
@@ -227,7 +227,7 @@ CAN_ERROR_T CAN_Transmit(uint32_t msg_id, uint8_t* data, uint8_t data_len) {
 	tmp_msg_obj.mode_id = msg_id;
 	tmp_msg_obj.dlc = data_len;
 	uint8_t i;
-	for (i = 0; i < tmp_msg_obj.dlc; i++) {	
+	for (i = 0; i < tmp_msg_obj.dlc; i++) {
 		tmp_msg_obj.data[i] = data[i];
 	}
 	return CAN_TransmitMsgObj(&tmp_msg_obj);
@@ -278,6 +278,14 @@ uint8_t CAN_GetTxErrorCount(void) {
 uint8_t CAN_GetRxErrorCount(void) {
     // page 290 in the user manual
     return (LPC_CCAN->CANEC & 0x00007F00) >> 8;
+}
+
+void CAN_Flush_Tx() {
+	RingBuffer_Flush(&tx_buffer);
+}
+
+void CAN_Flush_Rx() {
+	RingBuffer_Flush(&rx_buffer);
 }
 
 uint32_t CAN_GetCANINT(void) {

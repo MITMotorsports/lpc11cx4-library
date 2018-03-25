@@ -42,5 +42,9 @@ uint32_t CAN_GetCANSTAT(void);
 bool CAN_IsTXBusy(void);
 void CAN_ResetPeripheral(void);
 
+
+void CAN_Flush_Tx();
+void CAN_Flush_Rx();
+
 #endif
 #endif
