@@ -29,6 +29,7 @@ void CAN_SetMask2(uint32_t mask, uint32_t mode_id);
 CAN_ERROR_T CAN_Receive(CCAN_MSG_OBJ_T* user_buffer);
 CAN_ERROR_T CAN_Transmit(uint32_t msg_id, uint8_t* data, uint8_t data_len);
 CAN_ERROR_T CAN_TransmitMsgObj(CCAN_MSG_OBJ_T *msg_obj);
+CAN_ERROR_T CAN_TransmitMsgObj_SAVAGE(CCAN_MSG_OBJ_T *msg_obj);
 CAN_ERROR_T CAN_GetErrorStatus(void);
 
 uint8_t CAN_GetTxErrorCount(void);
@@ -36,6 +37,7 @@ uint8_t CAN_GetRxErrorCount(void);
 bool CAN_IsTXBusy(void);
 bool CAN_ResetPeripheral(void);
 
+void CAN_Clear_Error();
 void CAN_Flush_Tx();
 void CAN_Flush_Rx();
 

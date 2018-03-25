@@ -75,6 +75,10 @@ bool CAN_IsTxBusy(void) {
     return ((LPC_CCAN->CANTXREQ1 & 0x00000002) >> 1) == 1;
 }
 
+void CAN_Clear_Error() {
+	can_error_flag = false;
+}
+
 void CAN_Flush_Tx() {
 	RingBuffer_Flush(&tx_buffer);
 }
@@ -259,8 +263,19 @@ CAN_ERROR_T CAN_TransmitMsgObj(CCAN_MSG_OBJ_T *msg_obj) {
 			}
 		}
 
-	    return NO_CAN_ERROR;
+	  return NO_CAN_ERROR;
 	}
+}
+
+CAN_ERROR_T CAN_TransmitMsgObj_SAVAGE(CCAN_MSG_OBJ_T *msg_obj) {
+	static uint8_t i = 0;
+	i = i % NUM_MSG_OBJS + 1;
+	msg_obj->msgobj = i;
+	LPC_CCAN_API->can_transmit(msg_obj);
+	msg_obj_stat[i] = true;
+	sent = true;
+
+	return NO_CAN_ERROR;
 }
 
 CAN_ERROR_T CAN_GetErrorStatus(void) {
