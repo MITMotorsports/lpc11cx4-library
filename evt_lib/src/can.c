@@ -239,6 +239,16 @@ CAN_ERROR_T CAN_Transmit(uint32_t msg_id, uint8_t* data, uint8_t data_len) {
 	return CAN_TransmitMsgObj(&tmp_msg_obj);
 }
 
+CAN_ERROR_T CAN_Transmit_SAVAGE(uint32_t msg_id, uint8_t* data, uint8_t data_len) {
+	tmp_msg_obj.mode_id = msg_id;
+	tmp_msg_obj.dlc = data_len;
+	uint8_t i;
+	for (i = 0; i < tmp_msg_obj.dlc; i++) {
+		tmp_msg_obj.data[i] = data[i];
+	}
+	return CAN_TransmitMsgObj_SAVAGE(&tmp_msg_obj);
+}
+
 CAN_ERROR_T CAN_TransmitMsgObj(CCAN_MSG_OBJ_T *msg_obj) {
 	if (can_error_flag) {
 		can_error_flag = false;
@@ -273,7 +283,6 @@ CAN_ERROR_T CAN_TransmitMsgObj_SAVAGE(CCAN_MSG_OBJ_T *msg_obj) {
 	msg_obj->msgobj = i;
 	LPC_CCAN_API->can_transmit(msg_obj);
 	msg_obj_stat[i] = true;
-	sent = true;
 
 	return NO_CAN_ERROR;
 }
