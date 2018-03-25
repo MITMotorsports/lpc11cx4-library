@@ -36,5 +36,8 @@ uint8_t CAN_GetRxErrorCount(void);
 bool CAN_IsTXBusy(void);
 bool CAN_ResetPeripheral(void);
 
+void CAN_Flush_Tx();
+void CAN_Flush_Rx();
+
 #endif
 #endif

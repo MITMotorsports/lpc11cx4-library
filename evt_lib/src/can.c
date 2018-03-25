@@ -75,6 +75,14 @@ bool CAN_IsTxBusy(void) {
     return ((LPC_CCAN->CANTXREQ1 & 0x00000002) >> 1) == 1;
 }
 
+void CAN_Flush_Tx() {
+	RingBuffer_Flush(&tx_buffer);
+}
+
+void CAN_Flush_Rx() {
+	RingBuffer_Flush(&rx_buffer);
+}
+
 // TODO SAVE CURRENT IN FLIGHT MESSAGE SO THAT ON RESET ANY IN FLIGHT MESSAGES CAN BE RE-SENT
 
 bool CAN_ResetPeripheral(void) {
@@ -190,7 +198,7 @@ void CAN_Init(uint32_t baud_rate) {
 void CAN_SetMask1(uint32_t mask, uint32_t mode_id) {
 	msg_obj.msgobj = 27;
 	msg_obj.mode_id = mode_id;
-	msg_obj.mask = mask; 
+	msg_obj.mask = mask;
 	LPC_CCAN_API->config_rxmsgobj(&msg_obj);
 	msg_obj.msgobj = 28;
 	LPC_CCAN_API->config_rxmsgobj(&msg_obj);
@@ -201,7 +209,7 @@ void CAN_SetMask1(uint32_t mask, uint32_t mode_id) {
 void CAN_SetMask2(uint32_t mask, uint32_t mode_id) {
 	msg_obj.msgobj = 30;
 	msg_obj.mode_id = mode_id;
-	msg_obj.mask = mask; 
+	msg_obj.mask = mask;
 	LPC_CCAN_API->config_rxmsgobj(&msg_obj);
 	msg_obj.msgobj = 31;
 	LPC_CCAN_API->config_rxmsgobj(&msg_obj);
@@ -221,7 +229,7 @@ CAN_ERROR_T CAN_Transmit(uint32_t msg_id, uint8_t* data, uint8_t data_len) {
 	tmp_msg_obj.mode_id = msg_id;
 	tmp_msg_obj.dlc = data_len;
 	uint8_t i;
-	for (i = 0; i < tmp_msg_obj.dlc; i++) {	
+	for (i = 0; i < tmp_msg_obj.dlc; i++) {
 		tmp_msg_obj.data[i] = data[i];
 	}
 	return CAN_TransmitMsgObj(&tmp_msg_obj);
